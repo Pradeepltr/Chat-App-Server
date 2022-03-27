@@ -10,8 +10,8 @@ require("dotenv").config();
 
 app.use(cors())
 app.use(express.json());
-app.use("/api/auth",user)
-app.use("/api/msg",MSG)
+app.use("api/auth",user)
+app.use("api/msg",MSG)
 mongoose.connect("mongodb+srv://pradeep:pradeep@cluster0.4a6pc.mongodb.net/API?retryWrites=true&w=majority",{
     useNewUrlParser:true,
     useUnifiedTopology:true,
