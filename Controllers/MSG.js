@@ -1,0 +1,404 @@
+const MSG=require("../Model/Msg")
+const encryptData=[
+    {
+    key:"A",
+    val:"@",
+    },
+    {
+     key:"B",
+     val:"`"
+    },
+   {
+       key:"C",
+       val:"-"
+   },
+   {
+   key:"D",
+   val:"0"
+   },
+   {
+   key:"E",
+   val:"8",
+   },
+   {
+   key:"F",
+   val:"^"
+   },
+   {
+      key:"G",
+      val:"#"
+      },
+  {
+  key:"H",
+  val:"{"
+   },
+   {
+      key:"I",
+      val:"+"
+      },
+      {
+          key:"J",
+          val:"/"
+          },
+{
+key:"K",
+val:"a"
+},
+{
+  key:"L",
+  val:"z"
+},
+{
+  key:"M",
+  val:"b"
+},
+{
+  key:"N",
+  val:"y"
+},
+{
+  key:"O",
+  val:"c"
+},
+{
+  key:"P",
+  val:"x"
+},
+{
+  key:"Q",
+  val:"d",
+},
+{
+  key:"R",
+  val:"w"
+},
+{
+  key:"S",
+  val:"e"
+},
+{
+key:"T",
+val:"v"
+},
+{
+  key:"U",
+  val:"f"
+},
+{
+  key:"V",
+  val:"u"
+},
+{
+  key:"W",
+  val:"g"
+},
+{
+  key:"X",
+  val:"s"
+},
+{
+  key:"Y",
+  val:"h"
+},
+{
+  key:"Z",
+  val:"r"
+},
+{
+  key:"a",
+  val:"5",
+  },
+  {
+   key:"b",
+   val:"4"
+  },
+ {
+     key:"c",
+     val:"3"
+ },
+ {
+ key:"d",
+ val:"2"
+ },
+ {
+ key:"e",
+ val:"1",
+ },
+ {
+ key:"f",
+ val:"="
+ },
+ {
+    key:"g",
+    val:"!"
+    },
+{
+key:"h",
+val:">"
+ },
+ {
+    key:"i",
+    val:"<"
+    },
+    {
+        key:"j",
+        val:"%"
+        },
+{
+key:"k",
+val:"A"
+},
+{
+key:"l",
+val:"Z"
+},
+{
+key:"m",
+val:"B"
+},
+{
+key:"n",
+val:"Y"
+},
+{
+key:"o",
+val:"C"
+},
+{
+key:"p",
+val:"X"
+},
+{
+key:"q",
+val:"D",
+},
+{
+key:"r",
+val:"W"
+},
+{
+key:"s",
+val:"E"
+},
+{
+key:"t",
+val:"V"
+},
+{
+key:"u",
+val:"F"
+},
+{
+key:"v",
+val:"U"
+},
+{
+key:"w",
+val:"G"
+},
+{
+key:"x",
+val:"S"
+},
+{
+key:"y",
+val:"H"
+},
+{
+key:"z",
+val:"R"
+},
+{
+key:"1",
+val:"9"
+},
+{
+key:"2",
+val:"|"
+},
+{
+key:"3",
+val:":"
+},
+{
+key:"4",
+val:","
+},
+{
+key:"5",
+val:"?"
+},
+{
+key:"6",
+val:"$"
+},
+{
+key:"7",
+val:"_"
+},
+{
+key:"8",
+val:"&"
+},
+{
+key:"9",
+val:"["
+},
+{
+key:"10",
+val:"]"
+},
+{
+key:"0",
+val:"."
+},
+{
+    key:" ",
+    val:" "
+},
+{
+  key:"@",
+  val:"i"
+  
+},
+{
+key:"#",
+val:"j"
+},
+{
+  key:"$",
+  val:"k"
+
+},
+{
+  key:"%",
+  val:"l"
+},
+{
+  key:"^",
+  val:"m"
+},
+{
+  key:"&",
+  val:"n"
+},
+{
+  key:"*",
+  val:"o"
+},
+{
+  key:"(",
+  val:"p"
+},
+{
+  key:")",
+  val:"q"
+
+},
+{
+  key:"=",
+  val:"K"
+},
+{
+  key:"+",
+  value:"I"
+},
+{
+  key:"{",
+  val:"J"
+},
+{
+  key:"}",
+  val:"L"
+},
+{
+  key:"?",
+  val:"M"
+},
+{
+  key:"/",
+  val:"N"
+},
+{
+  key:"<",
+  val:"O"
+},
+{
+  key:">",
+  val:"P"
+},
+{
+  key:"!",
+  val:"Q"
+}
+
+
+
+]
+
+module.exports.addMessage=async(req,res,next)=>{
+    console.log("kkkkkkk")
+  try{
+     
+      var newmsg=""
+   const {from,to,message}=req.body
+   for(var i=0;i<message.length;i++){
+      encryptData.map((e)=>{
+          if(e.key==message.charAt(i))
+          {
+              newmsg+=e.val;
+          }
+      })
+
+   }
+   console.log(newmsg)
+   const data=await MSG.create({
+       message:{text:newmsg},
+       users:[from, to],
+       sender :from,
+   })
+   if(data){
+       console.log(data)
+       return res.json({msg:"Message added to th database"})
+   }
+   else{
+       return res.json({msg:"message not added to the database"})
+   }
+  }
+  catch(e){
+      next(e)
+  }
+}
+module.exports.getmessage=async(req,res,next)=>{
+  try{
+      const {from ,to}=req.body
+      const messages=await MSG.find({
+          users:{
+              $all :[from,to],
+          }
+      })
+      .sort({updateAt: 1});
+      const projectMessages=messages.map((msg)=>{
+          var decr=msg.message.text;
+          var decrmsg="";
+          for(var i=0;i<decr.length;i++)
+          {
+              encryptData.map((e)=>{
+                  if(e.val==decr.charAt(i))
+                  {
+                   decrmsg+=e.key
+                  }
+              })
+          }
+          
+          return{
+              fromSelf:msg.sender.toString()===from,
+              message:decrmsg,
+          }
+      })
+ return res.json(projectMessages)
+  }
+  catch(e){
+      next(e)
+  }
+}
