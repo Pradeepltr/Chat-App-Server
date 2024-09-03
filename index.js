@@ -10,12 +10,12 @@ require("dotenv").config();
 
 app.use(cors())
 app.use(express.json());
-app.use("/" ,(req,res)=>{
-    res.send("Server is running")
-})
+// app.use("/" ,(req,res)=>{
+//     res.send("Server is running")
+// })
 app.use("/api/auth",user)
 app.use("/api/msg",MSG)
-mongoose.connect("mongodb+srv://pradeep:pradeep@cluster0.4a6pc.mongodb.net/API?retryWrites=true&w=majority",{
+mongoose.connect("mongodb+srv://pk6361439:Pradeep1994@cluster0.oktpbg7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",{
     useNewUrlParser:true,
     useUnifiedTopology:true,
 }).then(()=>{
