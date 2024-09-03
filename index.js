@@ -8,7 +8,12 @@ const socket=require("socket.io")
 const app=express();
 require("dotenv").config();
 
-app.use(cors())
+app.use(cors(
+    {
+        origin:["https://chat-app-client-mu.vercel.app/"],
+        methods:["POST","GET","PUT","PATCH"]
+    }
+))
 app.use(express.json());
 // app.use("/" ,(req,res)=>{
 //     res.send("Server is running")
