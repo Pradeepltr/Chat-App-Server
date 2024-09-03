@@ -11,7 +11,8 @@ require("dotenv").config();
 app.use(cors(
     {
         origin:["https://chat-app-client-mu.vercel.app"],
-        methods:["POST","GET","PUT","PATCH"]
+        methods:["POST","GET","PUT","PATCH"],
+        credentials: true
     }
 ))
 app.use(express.json());
